@@ -1,4 +1,4 @@
-# %%
+#!/usr/bin/env python3
 """
 This script converts text files from a Kindle Scribe to markdown files.
 Usage:
@@ -51,7 +51,7 @@ updated_content = re.sub(r'^-(?! )', '- ', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^\.{3}', '', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^Page.*', '', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^(?!- )', '### ', updated_content, flags=re.MULTILINE)
-print(updated_content)
+# print(updated_content)
 
 
 # Write the updated content to the output file
