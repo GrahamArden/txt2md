@@ -1,3 +1,6 @@
+This is just nonsense used for testing the script
+
+
 Page 1
 concise summary of Notes:
 ◦ Initialize variables 'a' and 'b'
