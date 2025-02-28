@@ -2,8 +2,8 @@
 """
 This script converts text files from a Kindle Scribe to markdown files.
 Usage:
-    python3 kindle2md.py
-The script will prompt the user to select an input text file and an output markdown file using file dialogs.
+    python3 kindle2md.py [input_file] [output_file]
+The script will prompt the user to select an input text file and an output markdown file using file dialogs if not provided as command-line arguments.
 Functions:
     - The script reads the content of the selected input text file.
     - It processes the content by:
@@ -24,26 +24,41 @@ Note:
 import tkinter as tk
 from tkinter import filedialog
 import re
+import sys
+import os
 
-# Prompt the user to select an input text file and an output markdown file
-# Hide the root window
+def select_file_dialog(title):
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    file_path = filedialog.askopenfilename(title=title)
+    if not file_path:
+        print("File selection cancelled.")
+        exit()
+    return file_path
 
-root = tk.Tk()
-root.withdraw()  # Hide the root window
+def save_file_dialog(title):
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    file_path = filedialog.asksaveasfilename(title=title, defaultextension=".md", filetypes=[("Markdown files", "*.md"), ("All files", "*.*")])
+    if not file_path:
+        print("File selection cancelled.")
+        exit()
+    return file_path
 
-input_file = filedialog.askopenfilename(title="Select the input text file", filetypes=[("Text files", "*.txt")])
-output_file = filedialog.asksaveasfilename(title="Save as", defaultextension=".md", filetypes=[("Markdown files", "*.md")])
+if len(sys.argv) == 3:
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+else:
+    input_file = select_file_dialog("Select input text file")
+    output_file = save_file_dialog("Select output markdown file")
 
-if not input_file or not output_file:
-    print("File selection cancelled.")
+if not os.path.isfile(input_file):
+    print(f"File {input_file} does not exist.")
     exit()
 
 # Now you can use input_file and output_file for further processing
 with open(input_file, 'r', encoding='utf-8') as file:
     content = file.read()
-
-
-
 
 updated_content = content.replace('◦', '- ')
 updated_content = re.sub(r'^.*concise summary of.*$', 'Summary', updated_content, flags=re.MULTILINE)
@@ -51,12 +66,8 @@ updated_content = re.sub(r'^-(?! )', '- ', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^\.{3}', '', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^Page.*', '', updated_content, flags=re.MULTILINE)
 updated_content = re.sub(r'^(?!- )', '### ', updated_content, flags=re.MULTILINE)
-# print(updated_content)
-
 
 # Write the updated content to the output file
 with open(output_file, 'w', encoding='utf-8') as file:
     file.write(updated_content)
-
-
 
