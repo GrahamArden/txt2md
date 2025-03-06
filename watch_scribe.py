@@ -19,6 +19,20 @@ import imaplib
 import email
 from email.header import decode_header
 import requests
+import configparser
+
+# Parse the configuration file
+config_path = r"./config/config.ini"
+config = configparser.ConfigParser()
+
+# Read the config file
+config.read(config_path)
+
+# Get the values for 'ARIA_server' and 'ARIA_database' from the [ARIA] section
+IMAP_SERVER = config.get('email', 'IMAP_SERVER')
+EMAIL_USER = config.get('email', 'EMAIL_USER')
+EMAIL_PASS = config.get('email', 'EMAIL_PASS')
+
 
 def download_emails(imap_server, email_user, email_pass, folder_to_save):
     """
@@ -102,11 +116,7 @@ def watch_folder(folder_to_watch, script_to_run, output_folder):
         already_seen = current_files
 
 if __name__ == "__main__":
-    # Email configuration
-    IMAP_SERVER = 'imap.example.com'
-    EMAIL_USER = 'your_email@example.com'
-    EMAIL_PASS = 'your_password'
-    
+   
     # Download emails and save the files to 'Scribe' folder
     download_emails(IMAP_SERVER, EMAIL_USER, EMAIL_PASS, 'Scribe')
     
